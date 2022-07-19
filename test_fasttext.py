@@ -1,17 +1,20 @@
-from preprocess_quran_text import quran_series, quran_normalizer
-from tfidf_vectorizer import get_most_similars
+from preprocess_quran_text import quran_normalizer, quran_series
+from tools import get_most_similars
+from fasttext_vectorizer import sent_to_vec, merged_corpus_embeddings
 
 
-class TestTfIdfRetrieval:
+class TestFasttextRetrieval:
     def test_q1(self):
         query = 'الحمد لله'
         true_responses = [
             'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
             'وَ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
             'الْحَمْدُ لِلَّهِ الَّذِي لَهُ مَا فِي السَّمَاوَاتِ وَ مَا فِي الْأَرْضِ وَ لَهُ الْحَمْدُ فِي الْآخِرَةِ وَ هُوَ الْحَكِيمُ الْخَبِيرُ',
-            'فَقُطِعَ دَابِرُ الْقَوْمِ الَّذِينَ ظَلَمُوا وَ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
+            'فَلِلَّهِ الْحَمْدُ رَبِّ السَّمَاوَاتِ وَ رَبِّ الْأَرْضِ رَبِّ الْعَالَمِينَ',
         ]
-        responses = list(get_most_similars(quran_series, quran_normalizer(query), 10)['آیه'])
+        query_vec = sent_to_vec(quran_normalizer(query))
+        responses = list(get_most_similars(quran_series, merged_corpus_embeddings, query_vec, 10)['آیه'])
+
         for r in true_responses:
             assert (r in responses)
 
@@ -19,22 +22,22 @@ class TestTfIdfRetrieval:
         query = 'فرعون موسی'
         true_responses = [
             'وَ قَالَ مُوسَىٰ يَا فِرْعَوْنُ إِنِّي رَسُولٌ مِنْ رَبِّ الْعَالَمِينَ',
-            'إِلَىٰ فِرْعَوْنَ وَ مَلَئِهِ فَاتَّبَعُوا أَمْرَ فِرْعَوْنَ وَ مَا أَمْرُ فِرْعَوْنَ بِرَشِيدٍ',
-            'نَتْلُو عَلَيْكَ مِنْ نَبَإِ مُوسَىٰ وَ فِرْعَوْنَ بِالْحَقِّ لِقَوْمٍ يُؤْمِنُونَ',
             'وَ فِي مُوسَىٰ إِذْ أَرْسَلْنَاهُ إِلَىٰ فِرْعَوْنَ بِسُلْطَانٍ مُبِينٍ',
+            'وَ لَقَدْ أَرْسَلْنَا مُوسَىٰ بِآيَاتِنَا إِلَىٰ فِرْعَوْنَ وَ مَلَئِهِ فَقَالَ إِنِّي رَسُولُ رَبِّ الْعَالَمِينَ',
         ]
-        responses = list(get_most_similars(quran_series, quran_normalizer(query), 10)['آیه'])
+        query_vec = sent_to_vec(quran_normalizer(query))
+        responses = list(get_most_similars(quran_series, merged_corpus_embeddings, query_vec, 10)['آیه'])
         for r in true_responses:
             assert (r in responses)
 
     def test_q3(self):
         query = 'یوم القیامه'
         true_responses = [
-            'يَسْأَلُ أَيَّانَ يَوْمُ الْقِيَامَةِ',
             'ثُمَّ إِنَّكُمْ يَوْمَ الْقِيَامَةِ تُبْعَثُونَ',
-            'ثُمَّ إِنَّكُمْ يَوْمَ الْقِيَامَةِ عِنْدَ رَبِّكُمْ تَخْتَصِمُونَ',
             'خَالِدِينَ فِيهِ وَ سَاءَ لَهُمْ يَوْمَ الْقِيَامَةِ حِمْلًا',
+            'إِنَّ رَبَّكَ هُوَ يَفْصِلُ بَيْنَهُمْ يَوْمَ الْقِيَامَةِ فِيمَا كَانُوا فِيهِ يَخْتَلِفُونَ',
         ]
-        responses = list(get_most_similars(quran_series, quran_normalizer(query), 10)['آیه'])
+        query_vec = sent_to_vec(quran_normalizer(query))
+        responses = list(get_most_similars(quran_series, merged_corpus_embeddings, query_vec, 10)['آیه'])
         for r in true_responses:
             assert (r in responses)

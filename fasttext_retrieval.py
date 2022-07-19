@@ -5,7 +5,7 @@
 
 # %%
 import pandas as pd
-from preprocess_quran_text import quran_normalizer, merged_quran_vec_df_nrmlz, quran_series
+from preprocess_quran_text import quran_normalizer, quran_series
 from tools import get_most_similars
 from fasttext_vectorizer import sent_to_vec, merged_corpus_embeddings
 
@@ -23,4 +23,3 @@ for query in queries:
     i += 1
 results = pd.DataFrame(results)
 results['شباهت'] = results['شباهت'].round(3, )
-
