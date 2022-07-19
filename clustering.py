@@ -1,7 +1,6 @@
 # %%
 import pandas as pd
-from preprocess_quran_text import merged_quran_vec_df_nrmlz
-from fasttext_vectorizer import sent_to_vec, merged_corpus_embeddings
+from fasttext_vectorizer import merged_corpus_embeddings
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
