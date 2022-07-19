@@ -17,3 +17,5 @@ matplotlib~=3.5.2
 seaborn~=0.11.2
 networkx~=2.8.5
 pytest~=7.1.2
+gensim~=4.2.0
+lxml~=4.9.1
