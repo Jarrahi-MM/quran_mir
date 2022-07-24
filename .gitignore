@@ -3,3 +3,4 @@
 /chapter_clusters/
 /verse_clusters/
 .idea
+*.ipynb_checkpoints
