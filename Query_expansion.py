@@ -2,7 +2,6 @@ from quran_ir import TfIdfQuranIR
 import pandas as pd
 import scipy.sparse as sp
 from preprocess_quran_text import quran_normalizer, quran_series
-import time
 
 
 # %%
@@ -31,7 +30,7 @@ class QueryExpansion:
 
     def expand_query(self, query: str) -> str:
         normalized_query = quran_normalizer(query)
-        similarity_df = self.tfidf_quran_ir.get_most_similars(quran_series, normalized_query, self.Quran_aye_num)
+        similarity_df = self.tfidf_quran_ir.get_most_similars(normalized_query, self.Quran_aye_num)
         top_similars = similarity_df[:self.top_similar_ayes_num]
         dissimilars = similarity_df[-self.dissimilar_ayes_num:]
         avg_sim = self.get_avg_emb(top_similars)
@@ -49,6 +48,4 @@ class QueryExpansion:
         return ' '.join(expanded_query)
 
 
-query_expansion = QueryExpansion()
-print(query_expansion.expand_query('جنات تجری من'))
-print(query_expansion.expand_query('ربکما تکذبان'))
+
