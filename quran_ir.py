@@ -157,5 +157,49 @@ class FasttextQuranIR(QuranIR):
         return tools.get_most_similars(original_corpus=original_corpus,
                                        merged_corpus_embeddings=self.merged_corpus_embeddings,
                                        query_vec=self.sent_to_vec(query),
-                                       K=10,
+                                       K=K,
+                                       check_moghattaeh=check_moghattaeh)
+
+
+class ArabertQuranIR(QuranIR):
+    EMBEDDING_LEN = 768
+
+    def __init__(self):
+        from arabert.preprocess import ArabertPreprocessor
+        from transformers import AutoTokenizer, AutoModel
+        super().__init__()
+        self.algorithm = 'Arabert'
+        self.tfidf_quran_ir = TfIdfQuranIR()
+        model_name = "aubmindlab/bert-base-arabertv2"
+        self.arabert_prep = ArabertPreprocessor(model_name=model_name)
+        self.model = AutoModel.from_pretrained(model_name)
+        self.model.eval()
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.count = 0
+        # merged_quran_df or merged_quran_vec_df_nrmlz
+        self.merged_corpus_embeddings = merged_quran_vec_df_nrmlz.applymap(self.sent_to_vec)
+
+    def sent_to_vec(self, sent: str):
+        if sent == '':
+            return np.zeros(ArabertQuranIR.EMBEDDING_LEN)
+        text_preprocessed = self.arabert_prep.preprocess(sent)
+        arabert_input = self.tokenizer.encode_plus(text_preprocessed, return_tensors='pt')
+        tokens = self.tokenizer.convert_ids_to_tokens(arabert_input['input_ids'][0])[1:-1]
+        outputs = self.model(**arabert_input)
+        embeddings_text_only = outputs['last_hidden_state'][0][1:-1]
+        self.count += 1
+        if self.count % 1000 == 0:
+            print(self.count)
+        avg_vec = np.average(a=embeddings_text_only.detach().numpy(), weights=[self.tfidf_quran_ir.get_word_idf(
+            quran_normalizer(word)) if '+' not in word else 0 for word in tokens], axis=0)
+        if np.linalg.norm(avg_vec) == 0:
+            return np.zeros(ArabertQuranIR.EMBEDDING_LEN)
+        return avg_vec / np.linalg.norm(avg_vec)
+
+    def get_most_similars(self, original_corpus: pd.Series, query: str, K=10, check_moghattaeh=True) -> pd.DataFrame:
+        import tools
+        return tools.get_most_similars(original_corpus=original_corpus,
+                                       merged_corpus_embeddings=self.merged_corpus_embeddings,
+                                       query_vec=self.sent_to_vec(query),
+                                       K=K,
                                        check_moghattaeh=check_moghattaeh)
