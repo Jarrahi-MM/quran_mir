@@ -18,7 +18,7 @@ maki.sort()
 # %%
 fasttext_quran_ir = FasttextQuranIR()
 # X = merged_corpus_embeddings.sum(axis=1).to_frame()
-X = fasttext_quran_ir.merged_corpus_embeddings[['original_normalized']]
+X = fasttext_quran_ir.merged_corpus_embeddings[['original_normalized']].copy()
 X['شماره سوره'] = X.index.to_series().str.split('##').apply(lambda x: int(x[0]))
 X = X.groupby(['شماره سوره']).sum()
 X_type = pd.DataFrame(data={'نوع سوره': 'مکی'}, index=X.index)
