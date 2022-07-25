@@ -1,8 +1,9 @@
 # %%
-from fasttext_vectorizer import merged_corpus_embeddings
 import numpy as np
+from quran_ir import FasttextQuranIR
 
-X = merged_corpus_embeddings[['original_normalized']].copy()
+fasttext_quran_ir = FasttextQuranIR()
+X = fasttext_quran_ir.merged_corpus_embeddings[['original_normalized']].copy()
 X['شماره سوره'] = X.index.to_series().str.split('##').apply(lambda x: int(x[0]))
 X['شماره آیه'] = X.index.to_series().str.split('##').apply(lambda x: int(x[1]))
 

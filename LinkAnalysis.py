@@ -2,12 +2,12 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 from preprocess_quran_text import merged_quran_vec_df_nrmlz, quran_series
-from fasttext_vectorizer import sent_to_vec
 import networkx as nx
 import numpy as np
 from sklearn.preprocessing import normalize
 import warnings
 import tqdm
+from quran_ir import FasttextQuranIR
 
 warnings.filterwarnings("ignore")
 
@@ -16,9 +16,9 @@ verse_names = pd.read_csv('data/verse_names.csv')
 verse_names.set_index(verse_names['ردیف'], inplace=True)
 
 # %%
-merged_corpus_embeddings = merged_quran_vec_df_nrmlz.applymap(sent_to_vec)
+fasttext_quran_ir = FasttextQuranIR()
 # %%
-X = merged_corpus_embeddings[['original_normalized']]
+X = fasttext_quran_ir.merged_corpus_embeddings[['original_normalized']]
 X['شماره سوره'] = X.index.to_series().str.split('##').apply(lambda x: int(x[0]))
 # %%
 list_of_verse_embeddings = [x for _, x in X.groupby(['شماره سوره'])]

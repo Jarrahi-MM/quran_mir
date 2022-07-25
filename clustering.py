@@ -1,10 +1,10 @@
 # %%
 import pandas as pd
-from fasttext_vectorizer import merged_corpus_embeddings
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import sklearn
+from quran_ir import FasttextQuranIR
 
 sns.set()
 
@@ -16,8 +16,9 @@ madani.sort()
 maki.sort()
 
 # %%
+fasttext_quran_ir = FasttextQuranIR()
 # X = merged_corpus_embeddings.sum(axis=1).to_frame()
-X = merged_corpus_embeddings[['original_normalized']]
+X = fasttext_quran_ir.merged_corpus_embeddings[['original_normalized']]
 X['شماره سوره'] = X.index.to_series().str.split('##').apply(lambda x: int(x[0]))
 X = X.groupby(['شماره سوره']).sum()
 X_type = pd.DataFrame(data={'نوع سوره': 'مکی'}, index=X.index)
