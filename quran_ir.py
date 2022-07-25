@@ -126,6 +126,10 @@ class FasttextQuranIR(QuranIR):
 
     @staticmethod
     def train(create_dataset=False):
+        # ! git clone https://github.com/facebookresearch/fastText.git
+        # ! cd fastText
+        # ! make
+        # ! sudo pip install .
         from tools import create_data_set
         import subprocess
         import shlex
