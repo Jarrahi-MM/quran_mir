@@ -3,6 +3,7 @@ import pandas as pd
 import qalsadi.lemmatizer
 from nltk.stem.isri import ISRIStemmer
 import tqdm
+from preprocess_quran_text import quran_series
 
 stemmer = ISRIStemmer()
 lemmer = qalsadi.lemmatizer.Lemmatizer()  # This is a weak Lemmatizer.
@@ -29,16 +30,8 @@ def similarity(query_vec: np.ndarray):
     return temp
 
 
-def get_most_similars(original_corpus: pd.Series, merged_corpus_embeddings: pd.DataFrame,
+def get_most_similars(merged_corpus_embeddings: pd.DataFrame,
                       query_vec: np.ndarray, K=10, check_moghattaeh=False) -> pd.DataFrame:
-    '''
-    :param check_moghattaeh:
-    :param K:
-    :param original_corpus: uses this data to produce the result df.
-    :param merged_corpus_embeddings: may have many columns. for originals, roots, lemmas, ... . each row is for an aye. embeddings should be normalized.
-    :param query_vec:
-    :return: ayat and scores df.
-    '''
     similarity_df = merged_corpus_embeddings.applymap(similarity(query_vec))
 
     similarity_series = pd.concat(
@@ -51,7 +44,7 @@ def get_most_similars(original_corpus: pd.Series, merged_corpus_embeddings: pd.D
         count = 0
         selected_ayats = {}
         for i in sorted_similarities.index:
-            if len(original_corpus[i].split()) > 1:
+            if len(quran_series[i].split()) > 1:
                 count += 1
                 selected_ayats[i] = sorted_similarities[i]
             if count == K:
@@ -59,5 +52,5 @@ def get_most_similars(original_corpus: pd.Series, merged_corpus_embeddings: pd.D
         selected_ayats = pd.Series(selected_ayats)
         selected_ayats = selected_ayats.sort_values(ascending=False)
 
-    return pd.DataFrame(data={'آیه': original_corpus[selected_ayats.index],
+    return pd.DataFrame(data={'آیه': quran_series[selected_ayats.index],
                               'شباهت': selected_ayats}, index=selected_ayats.index)
