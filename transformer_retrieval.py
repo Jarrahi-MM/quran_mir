@@ -7,10 +7,12 @@ from transformers import AutoTokenizer, AutoModel
 from arabert.preprocess import ArabertPreprocessor
 from preprocess_quran_text import quran_series, quran_normalizer, merged_quran_vec_df_nrmlz
 from tools import get_most_similars
-from tfidf_vectorizer import get_word_idf
 import numpy as np
 import pandas as pd
+from quran_ir import TfIdfQuranIR
 
+# %%
+tfidf_quran_ir = TfIdfQuranIR()
 # %%
 EMBEDDING_LEN = 768
 model_name = "aubmindlab/bert-base-arabertv2"
@@ -35,7 +37,7 @@ def sent_to_vec(sent):
     count += 1
     if count % 1000 == 0:
         print(count)
-    avg_vec = np.average(a=embeddings_text_only.detach().numpy(), weights=[get_word_idf(
+    avg_vec = np.average(a=embeddings_text_only.detach().numpy(), weights=[tfidf_quran_ir.get_word_idf(
         quran_normalizer(word)) if '+' not in word else 0 for word in tokens], axis=0)
     if np.linalg.norm(avg_vec) == 0:
         return np.zeros(EMBEDDING_LEN)
@@ -45,7 +47,7 @@ def sent_to_vec(sent):
 # %%
 # merged_quran_df or merged_quran_vec_df_nrmlz
 merged_corpus_embeddings = merged_quran_vec_df_nrmlz.applymap(sent_to_vec)
-#%%
+# %%
 
 with open('./queries.txt') as f:
     queries = f.readlines()

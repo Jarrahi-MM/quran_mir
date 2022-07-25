@@ -1,8 +1,10 @@
 from preprocess_quran_text import quran_series, quran_normalizer
-from tfidf_vectorizer import get_most_similars
+from quran_ir import TfIdfQuranIR
 
 
 class TestTfIdfRetrieval:
+    tfidf_quran_ir = TfIdfQuranIR()
+
     def test_q1(self):
         query = 'الحمد لله'
         true_responses = [
@@ -11,7 +13,8 @@ class TestTfIdfRetrieval:
             'الْحَمْدُ لِلَّهِ الَّذِي لَهُ مَا فِي السَّمَاوَاتِ وَ مَا فِي الْأَرْضِ وَ لَهُ الْحَمْدُ فِي الْآخِرَةِ وَ هُوَ الْحَكِيمُ الْخَبِيرُ',
             'فَقُطِعَ دَابِرُ الْقَوْمِ الَّذِينَ ظَلَمُوا وَ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
         ]
-        responses = list(get_most_similars(quran_series, quran_normalizer(query), 10)['آیه'])
+        responses = list(
+            TestTfIdfRetrieval.tfidf_quran_ir.get_most_similars(quran_series, quran_normalizer(query), 10)['آیه'])
         for r in true_responses:
             assert (r in responses)
 
@@ -23,7 +26,8 @@ class TestTfIdfRetrieval:
             'نَتْلُو عَلَيْكَ مِنْ نَبَإِ مُوسَىٰ وَ فِرْعَوْنَ بِالْحَقِّ لِقَوْمٍ يُؤْمِنُونَ',
             'وَ فِي مُوسَىٰ إِذْ أَرْسَلْنَاهُ إِلَىٰ فِرْعَوْنَ بِسُلْطَانٍ مُبِينٍ',
         ]
-        responses = list(get_most_similars(quran_series, quran_normalizer(query), 10)['آیه'])
+        responses = list(
+            TestTfIdfRetrieval.tfidf_quran_ir.get_most_similars(quran_series, quran_normalizer(query), 10)['آیه'])
         for r in true_responses:
             assert (r in responses)
 
@@ -35,6 +39,7 @@ class TestTfIdfRetrieval:
             'ثُمَّ إِنَّكُمْ يَوْمَ الْقِيَامَةِ عِنْدَ رَبِّكُمْ تَخْتَصِمُونَ',
             'خَالِدِينَ فِيهِ وَ سَاءَ لَهُمْ يَوْمَ الْقِيَامَةِ حِمْلًا',
         ]
-        responses = list(get_most_similars(quran_series, quran_normalizer(query), 10)['آیه'])
+        responses = list(
+            TestTfIdfRetrieval.tfidf_quran_ir.get_most_similars(quran_series, quran_normalizer(query), 10)['آیه'])
         for r in true_responses:
             assert (r in responses)
