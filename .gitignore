@@ -4,3 +4,4 @@
 /verse_clusters/
 .idea
 *.ipynb_checkpoints
+*__pycache__*
