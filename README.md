@@ -10,7 +10,7 @@ This file gets a query as input & expands that query based on rocchio algorithm.
 ### preprocess_quran_text.py
 This file is used for preprocessing on quran text, quran lemma text & quran root text based on customized parsi.io librabry.
 
-###MRR_Comparsion
+### MRR_Comparsion
 This file includes 4 csvs that compare IR results on expanded queries & original queries.
 
 ### boolean_retrieval
