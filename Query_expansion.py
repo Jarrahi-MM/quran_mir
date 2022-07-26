@@ -5,6 +5,11 @@ from preprocess_quran_text import quran_normalizer, quran_series
 
 
 # %%
+def get_suggested_new_words(suggested_words, original_query):
+    new_words = [w for w in suggested_words if w not in original_query]
+    return new_words
+
+
 class QueryExpansion:
 
     def __init__(self):
@@ -14,10 +19,10 @@ class QueryExpansion:
         self.top_similar_ayes_num = 20
         self.dissimilar_ayes_num = 500
 
-    def get_words_not_in_vocab(self, normalized_query):
+    def get_words_in_vocab(self, normalized_query):
         words = normalized_query.split()
-        words_not_in_vocab = [w for w in words if w not in self.tfidf_quran_ir.words]
-        return words_not_in_vocab
+        words_in_vocab = [w for w in words if w in self.tfidf_quran_ir.words]
+        return words_in_vocab
 
     def get_avg_emb(self, quran_ayes: pd.DataFrame) -> sp.csr_matrix:
         emb_sum = None
@@ -38,14 +43,10 @@ class QueryExpansion:
         a, b, c = self.params
         refined_query = a * self.tfidf_quran_ir.vectorizer.transform([normalized_query]) + b * avg_sim - c * avg_dissim
         list1, list2 = zip(*sorted(zip(refined_query.data, refined_query.indices), reverse=True))
-        words_not_in_vocab = self.get_words_not_in_vocab(normalized_query)
-        words_in_vocab_len = len(normalized_query.split()) - len(words_not_in_vocab)
+        words_in_vocab_len = len(self.get_words_in_vocab(normalized_query))
         top_related = list2[: words_in_vocab_len + min(5, words_in_vocab_len)]
-        expanded_query = words_not_in_vocab
-        expanded_query.extend([self.tfidf_quran_ir.vectorizer.get_feature_names()[e] for e in top_related
-                               # if self.tfidf_quran_ir.vectorizer.get_feature_names()[e] not in stopwords
-                               ])
+        suggested_words = [self.tfidf_quran_ir.vectorizer.get_feature_names()[e] for e in top_related]
+        new_words = get_suggested_new_words(suggested_words, normalized_query)
+        expanded_query = normalized_query.split()
+        expanded_query.extend(new_words)
         return ' '.join(expanded_query)
-
-
-
