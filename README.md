@@ -30,15 +30,15 @@ This class is used for IR based on transformer method.
 ### QuranIR Class
 All above classes inherit this class, to get search results for queries.
 
-##Query files
-###queries.txt 
+## Query files
+### queries.txt 
 This file is used for evaluating Elastic Search & fasttext IR, Arabert IR, tf-idf IR.
-###queries_boolean.txt 
+### queries_boolean.txt 
 This file is used for evaluating boolean IR.
 
 
-##Clustering & Classification files
-###transformer_classification.ipynb
+## Clustering & Classification files
+### transformer_classification.ipynb
 In this notebook we use Arabert and fine-tune it in order to use it for our classification task.
 
 ### classification.py & classification.ipynb
