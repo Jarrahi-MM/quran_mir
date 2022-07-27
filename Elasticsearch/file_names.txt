@@ -1,0 +1,3 @@
+MRR Comparison for IR with & without Query Expansion - Arabert.csv;Transformer
+MRR Comparison for IR with & without Query Expansion - Fasttext.csv;Fasttext
+MRR Comparison for IR with & without Query Expansion - TfIdf.csv;Tf-idf
